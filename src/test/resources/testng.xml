@@ -2,6 +2,7 @@
 
 <suite name="Demo Test Suite" verbose="1">
     <listeners>
+        <listener class-name="com.testvagrant.listeners.ScreenshotListener"/>
         <listener class-name="com.aventstack.extentreports.testng.listener.ExtentITestListenerAdapter"/>
     </listeners>
     <test name="Functional Tests">
