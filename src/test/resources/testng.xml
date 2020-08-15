@@ -6,7 +6,7 @@
     </listeners>
     <test name="Functional Tests">
         <classes>
-            <class name=""/>
+            <class name="com.testvagrant.functional_tests.TestValidateWeatherInfo"/>
         </classes>
     </test>
 </suite>

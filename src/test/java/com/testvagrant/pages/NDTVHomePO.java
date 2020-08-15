@@ -4,14 +4,14 @@ import com.testvagrant.base.BasePageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class DummyPageObject extends BasePageObject {
+public class NDTVHomePO extends BasePageObject {
 
-    public DummyPageObject(WebDriver driver) {
+    public NDTVHomePO(WebDriver driver) {
         super(driver);
     }
 
     @Override
     protected By getUniqueElement() {
-        return null;
+        return By.id("_embedhtml");
     }
 }

@@ -14,7 +14,6 @@
         <wdm.version>3.8.1</wdm.version>
         <slf4j.version>1.7.25</slf4j.version>
         <restassured.version>3.3.0</restassured.version>
-        <cucumber.version>4.2.6</cucumber.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <browser>chrome</browser>
         <headless>true</headless>

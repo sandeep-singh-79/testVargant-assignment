@@ -2,7 +2,7 @@ package com.testvagrant.base;
 
 import com.testvagrant.config.FrameworkConfig;
 import com.testvagrant.driver.WebDriverFactory;
-import com.testvagrant.pages.DummyPageObject;
+import com.testvagrant.pages.NDTVHomePO;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
@@ -12,13 +12,15 @@ import org.testng.annotations.BeforeTest;
 import java.util.Arrays;
 import java.util.Properties;
 
+import static com.testvagrant.base.context.Context.DRIVER;
+import static com.testvagrant.base.context.Context.PageObject.NDTVHomePagePO;
 import static java.lang.String.format;
 import static org.testng.Assert.fail;
 
 @Slf4j
 public abstract class BaseTestNGTest {
     private WebDriverFactory driverFactory;
-
+    protected NDTVHomePO homePO;
     protected WebDriver driver;
     protected Properties config;
 
@@ -28,6 +30,9 @@ public abstract class BaseTestNGTest {
         // provided in framework config properties file
         init_test_variables();
         driver.manage().window().maximize();
+
+        loadApplication(testContext);
+        testContext.setAttribute(DRIVER.toString(), driver);
     }
 
     private void init_test_variables() {
@@ -43,15 +48,16 @@ public abstract class BaseTestNGTest {
 
     private void initialize_landing_page(ITestContext testContext) {
         // initialize landing page object to null
+        homePO = new NDTVHomePO(driver);
         try {
             // initialize the object here
             if (driver != null)
-                testContext.setAttribute("DummyPageObject", new DummyPageObject(driver));
+                testContext.setAttribute(NDTVHomePagePO.toString(), homePO);
             else throw new NullPointerException("WebDriver object was not initialized!!!");
         } catch (NullPointerException npe) {
             init_test_variables();
             loadApplication(testContext);
-            testContext.setAttribute("DummyPageObject", new DummyPageObject(driver));
+            testContext.setAttribute(NDTVHomePagePO.toString(), homePO);
         } catch (Exception e) {
             log.error(format("unable to navigate to Dashboard page due to %s", e.getMessage()));
             log.error(Arrays.toString(e.getStackTrace()));
