@@ -20,6 +20,6 @@ public class NDTVWeatherPO extends BasePageObject {
 
     @Override
     protected By getUniqueElement() {
-        return By.id("map.canvas");
+        return By.xpath("//div[@class='comment_cont']");
     }
 }
