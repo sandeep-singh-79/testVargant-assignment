@@ -1,6 +1,7 @@
 package com.testvagrant.functional_tests;
 
 import com.testvagrant.base.BaseTestNGTest;
+import com.testvagrant.pages.NDTVWeatherPO;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
@@ -14,9 +15,12 @@ import static org.testng.Assert.assertTrue;
 @Slf4j
 public class TestValidateWeatherInfo extends BaseTestNGTest {
 
+    private NDTVWeatherPO weatherPO;
+
     @BeforeMethod
     public void setupTest(ITestContext testContext) {
         driver = (WebDriver) testContext.getAttribute(DRIVER.toString());
+        weatherPO = homePO.navigateToWeatherPage();
     }
 
     @AfterMethod(alwaysRun = true)
@@ -26,6 +30,6 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
 
     @Test
     public void isSiteTitleCorrect() {
-        assertTrue(driver.getTitle().contains("NDTV:"));
+        assertTrue(driver.getTitle().contains("Weather"));
     }
 }
