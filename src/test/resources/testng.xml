@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Demo Test Suite" verbose="1">
+    <listeners>
+        <listener class-name="com.aventstack.extentreports.testng.listener.ExtentITestListenerAdapter"/>
+    </listeners>
+    <test name="Functional Tests">
+        <classes>
+            <class name=""/>
+        </classes>
+    </test>
+</suite>
