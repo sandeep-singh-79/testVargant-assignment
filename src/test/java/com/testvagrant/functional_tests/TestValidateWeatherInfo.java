@@ -21,6 +21,7 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
     public void setupTest(ITestContext testContext) {
         driver = (WebDriver) testContext.getAttribute(DRIVER.toString());
         weatherPO = homePO.navigateToWeatherPage();
+        weatherPO.searchForCity("ja", "Jabalpur");
     }
 
     @AfterMethod(alwaysRun = true)
