@@ -37,6 +37,7 @@ public class NDTVHomePO extends BasePageObject {
     public NDTVWeatherPO navigateToWeatherPage() {
         ellipses.click();
         wait.until(ExpectedConditions.visibilityOf(weatherLink)).click();
+        log.info("navigating to weather page");
         return new NDTVWeatherPO(driver);
     }
 
