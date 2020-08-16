@@ -40,8 +40,9 @@ public abstract class BaseTestNGTest {
 
     private void init_test_variables() {
         config = FrameworkConfig.getInstance().getConfigProperties();
-        testData = new PropertyFileReader(new File(System.getProperty("user.dir") +
-                                                           "/src/test/resources/test_data/data.properties")).getPropertyFile();
+        testData = new PropertyFileReader(new File(format("%s/src/test/resources/test_data/data.properties",
+                System.getProperty("user.dir"))))
+                           .getPropertyFile();
         driverFactory = WebDriverFactory.getInstance();
         driver = driverFactory.getDriver(System.getProperty("driverType", config.getProperty("DRIVERTYPE")));
     }

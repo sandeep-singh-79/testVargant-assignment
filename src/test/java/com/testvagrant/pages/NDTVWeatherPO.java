@@ -2,7 +2,6 @@ package com.testvagrant.pages;
 
 import com.testvagrant.base.BasePageObject;
 import com.testvagrant.config.FrameworkConfig;
-import com.testvagrant.model.WeatherInfo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -42,14 +41,12 @@ public class NDTVWeatherPO extends BasePageObject {
         return this;
     }
 
-    public WeatherInfo storeWeatherInfo(final String cityName) {
+    public Map<String, String> storeWeatherInfo(final String cityName) {
         WebElement weatherInfoContainer = wait.until(visibilityOf(driver.findElement(By.className("leaflet-popup-content"))));
         weatherConditions = weatherInfoContainer.findElements(By.cssSelector(".leaflet-popup-content spa.heading"));
         Map<String, String> weatherConditionsMap = populateWeatherConditions(weatherConditions, cityName);
 
-        WeatherInfo weatherInfo = new WeatherInfo();
-
-        return weatherInfo;
+        return weatherConditionsMap;
     }
 
     private Map<String, String> populateWeatherConditions(List<WebElement> weatherConditions, String cityName) {

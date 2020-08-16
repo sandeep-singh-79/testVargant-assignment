@@ -7,7 +7,7 @@ public class WeatherInfo {
     private List<String> condition;
     private float windSpeed;
     private float humidity;
-    private byte tempDegress, tempFahrenheit;
+    private byte tempDegrees, tempFahrenheit;
 
     public WeatherInfo() {
     }
