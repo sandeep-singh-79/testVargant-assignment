@@ -1,6 +1,7 @@
 package com.testvagrant.base;
 
 import com.testvagrant.config.FrameworkConfig;
+import com.testvagrant.config.PropertyFileReader;
 import com.testvagrant.driver.WebDriverFactory;
 import com.testvagrant.pages.NDTVHomePO;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.testng.ITestContext;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -23,6 +25,7 @@ public abstract class BaseTestNGTest {
     protected NDTVHomePO homePO;
     protected WebDriver driver;
     protected Properties config;
+    protected Properties testData;
 
     @BeforeTest(alwaysRun = true)
     public void initTest(ITestContext testContext) {
@@ -37,6 +40,8 @@ public abstract class BaseTestNGTest {
 
     private void init_test_variables() {
         config = FrameworkConfig.getInstance().getConfigProperties();
+        testData = new PropertyFileReader(new File(System.getProperty("user.dir") +
+                                                           "/src/test/resources/test_data/data.properties")).getPropertyFile();
         driverFactory = WebDriverFactory.getInstance();
         driver = driverFactory.getDriver(System.getProperty("driverType", config.getProperty("DRIVERTYPE")));
     }

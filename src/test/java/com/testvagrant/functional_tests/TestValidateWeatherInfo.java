@@ -18,10 +18,12 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
     private NDTVWeatherPO weatherPO;
 
     @BeforeMethod
-    public void setupTest(ITestContext testContext) {
+    public void setupTest(ITestContext testContext) throws InterruptedException {
         driver = (WebDriver) testContext.getAttribute(DRIVER.toString());
         weatherPO = homePO.navigateToWeatherPage();
-        weatherPO.searchForCity("ja", "Jabalpur");
+        weatherPO
+                .searchForCity(testData.getProperty("searchTerm"), testData.getProperty("cityName"))
+                .displayCityWeatherInfo(testData.getProperty("cityName"));
     }
 
     @AfterMethod(alwaysRun = true)
@@ -30,7 +32,7 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
     }
 
     @Test
-    public void isSiteTitleCorrect() {
-        assertTrue(driver.getTitle().contains("Weather"));
+    public void validateCityWeatherInfoIsDisplayed() {
+        assertTrue(weatherPO.isWeatherInfoDisplayed());
     }
 }
