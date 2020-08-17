@@ -10,8 +10,8 @@ public class WeatherInfo {
     private List<String> condition;
     private float windSpeed;
     private float windGust;
-    private int tempDegrees;
-    private int tempFahrenheit;
+    private float tempDegrees;
+    private float tempFahrenheit;
     private int humidity;
 
     @Override
