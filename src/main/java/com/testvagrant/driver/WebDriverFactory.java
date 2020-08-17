@@ -20,13 +20,14 @@ public final class WebDriverFactory {
     private static volatile WebDriverFactory instance;
     private static WebDriver webDriverInstance = null;
     private static ThreadLocal<WebDriver> driver;
-    private Properties config;
+    private final Properties config;
 
     // webdriver instantiation properties
-    private String browser;
+    private final String browser;
 
     public void closeDriver() {
         driver.remove();
+        if (driver != null) driver.get().quit();
     }
 
     private WebDriverFactory() {
