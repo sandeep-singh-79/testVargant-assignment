@@ -45,13 +45,16 @@ public class NDTVWeatherPO extends BasePageObject {
         WebElement weatherInfoContainer = wait.until(visibilityOf(driver.findElement(By.className("leaflet-popup-content"))));
         weatherConditions = weatherInfoContainer.findElements(By.cssSelector(".leaflet-popup-content span.heading"));
 
-        return redoConditionsMap(populateWeatherConditions(this.weatherConditions, cityName));
+        return redoConditionsMap(populateWeatherConditions(weatherConditions, cityName));
     }
 
     private Map<String, Object> redoConditionsMap(Map<String, Object> interimWeatherConditions) {
         Map<String, Object> mapToReturn = new HashMap<>();
-        if (interimWeatherConditions.containsKey("Condition"))
-            mapToReturn.put("condition", interimWeatherConditions.get("Condition"));
+        if (interimWeatherConditions.containsKey("Condition")) {
+            List<String> conditions = new ArrayList<>();
+            conditions.add(interimWeatherConditions.get("Condition").toString());
+            mapToReturn.put("condition", conditions);
+        }
         if (interimWeatherConditions.containsKey("Wind")) {
             String[] windStringSplits = ((String) interimWeatherConditions.get("Wind")).trim().split(" ");
             mapToReturn.put("windSpeed", windStringSplits[0]);

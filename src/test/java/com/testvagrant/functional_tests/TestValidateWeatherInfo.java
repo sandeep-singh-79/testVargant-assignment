@@ -38,7 +38,7 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
         String cityName = testData.getProperty("cityName");
         initAPIBase(testContext, cityName);
 
-        //captureWeatherInfoFromApi(cityName);
+        captureWeatherInfoFromApi(cityName);
         captureWeatherInfoFromWeb(cityName);
     }
 
@@ -55,7 +55,7 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
         weatherResponseMap.put("windSpeed", response.jsonPath().get("wind.speed"));
         weatherResponseMap.put("windGust", response.jsonPath().get("wind.gust"));
         weatherResponseMap.put("tempDegrees", tempDegrees);
-        weatherResponseMap.put("tempFahrenheit", tempDegrees * 1.8 + 32);
+        weatherResponseMap.put("tempFahrenheit", (int) (tempDegrees * 1.8 + 32));
         weatherResponseMap.put("humidity", response.jsonPath().get("main.humidity"));
 
         weatherInfoApi = gson.fromJson(JsonOutput.toJson(weatherResponseMap), WeatherInfo.class);
