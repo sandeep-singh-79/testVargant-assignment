@@ -5,6 +5,13 @@ both Selenium driven UI tests & handle API calls.
 
 If the user wants to create a new Selenium/UI test then s(he) needs to just inherit from the BaseTestNGTest class.
 
+## Deploy the code on local
+```git
+git clone https://github.com/sandeep-singh-79/testVargant-assignment.git
+```
+
+## Run the code
+
 The framework supports the below commandline parameters:
 
 1. BROWSER - chrome/firefox/internetexplorer
