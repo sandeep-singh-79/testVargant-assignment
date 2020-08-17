@@ -1,14 +1,16 @@
 package com.testvagrant.functional_tests;
 
+import com.google.gson.Gson;
 import com.testvagrant.base.BaseTestNGTest;
 import com.testvagrant.base.api.ApiBase;
 import com.testvagrant.base.api.EndPoints;
+import com.testvagrant.model.WeatherInfo;
 import com.testvagrant.pages.NDTVWeatherPO;
+import groovy.json.JsonOutput;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.Matchers;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterMethod;
@@ -19,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.testvagrant.base.context.Context.DRIVER;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 @Slf4j
 public class TestValidateWeatherInfo extends BaseTestNGTest {
@@ -27,6 +29,8 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
     private NDTVWeatherPO weatherPO;
     private ApiBase apiBase;
     private Response response;
+    private WeatherInfo weatherInfoWeb, weatherInfoApi;
+    private final Gson gson = new Gson();
 
     @BeforeMethod
     public void setupTest(ITestContext testContext) throws InterruptedException {
@@ -34,24 +38,37 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
         String cityName = testData.getProperty("cityName");
         initAPIBase(testContext, cityName);
 
-        //captureWeatherInfoFromWeb(cityName);
-        captureWeatherInfoFromApi();
+        //captureWeatherInfoFromApi(cityName);
+        captureWeatherInfoFromWeb(cityName);
     }
 
-    private void captureWeatherInfoFromApi() {
+    private void captureWeatherInfoFromApi(String cityName) {
         response = apiBase.get_response(Method.GET, EndPoints.WEATHER.toString());
 
         response
                 .then()
                 .statusCode(200);
+        int tempDegrees = response.jsonPath().get("main.temp");
+        Map<String, Object> weatherResponseMap = new HashMap<>();
+        weatherResponseMap.put("condition", response.jsonPath().getList("weather.main"));
+        weatherResponseMap.put("cityName", cityName);
+        weatherResponseMap.put("windSpeed", response.jsonPath().get("wind.speed"));
+        weatherResponseMap.put("windGust", response.jsonPath().get("wind.gust"));
+        weatherResponseMap.put("tempDegrees", tempDegrees);
+        weatherResponseMap.put("tempFahrenheit", tempDegrees * 1.8 + 32);
+        weatherResponseMap.put("humidity", response.jsonPath().get("main.humidity"));
+
+        weatherInfoApi = gson.fromJson(JsonOutput.toJson(weatherResponseMap), WeatherInfo.class);
     }
 
     private void captureWeatherInfoFromWeb(String cityName) throws InterruptedException {
         weatherPO = homePO.navigateToWeatherPage();
-        weatherPO
-                .searchForCity(testData.getProperty("searchTerm"), cityName)
-                .displayCityWeatherInfo(cityName)
-                .storeWeatherInfo(cityName);
+        Map<String, Object> weatherWeb = new HashMap<>();
+        weatherWeb = weatherPO
+                             .searchForCity(testData.getProperty("searchTerm"), cityName)
+                             .displayCityWeatherInfo(cityName)
+                             .storeWeatherInfo(cityName);
+        weatherInfoWeb = gson.fromJson(JsonOutput.toJson(weatherWeb), WeatherInfo.class);
     }
 
     public void initAPIBase(ITestContext testContext, String cityName) {
@@ -73,7 +90,6 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
 
     @Test
     public void validateCityWeatherInfoIsDisplayed() {
-        assertTrue(weatherPO.isWeatherInfoDisplayed());
-        response.then().body("weather.main", Matchers.instanceOf(String.class));
+        assertEquals(weatherInfoApi, weatherInfoWeb);
     }
 }
