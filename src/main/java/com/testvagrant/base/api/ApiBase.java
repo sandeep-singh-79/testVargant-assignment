@@ -65,7 +65,7 @@ public class ApiBase {
     }
 
     public ApiBase set_query_params(final Map<String, ?> params) {
-        requestSpecification.params(params);
+        specBuilder.addQueryParams(params);
         return this;
     }
 
@@ -77,33 +77,6 @@ public class ApiBase {
     public ApiBase set_cookies(Cookies cookies) {
         specBuilder.addCookies(cookies);
         return this;
-    }
-
-    public static ApiBase init_api_base(final String base_url,
-                                        final byte base_port,
-                                        final String end_point,
-                                        final Headers headers,
-                                        final ContentType contentType,
-                                        final Cookie cookie) {
-        return init_api_base(base_url, base_port, end_point, headers, contentType)
-                       .set_cookie(cookie);
-    }
-
-    public static ApiBase init_api_base(final String base_url,
-                                        final byte base_port,
-                                        final String end_point,
-                                        final Headers headers,
-                                        final ContentType contentType) {
-        return init_api_base(base_url, base_port, end_point, headers)
-                       .set_content_type(contentType);
-    }
-
-    public static ApiBase init_api_base(final String base_url,
-                                        final byte base_port,
-                                        final String end_point,
-                                        final Headers headers) {
-        return new ApiBase(base_url, base_port, end_point)
-                       .set_request_headers(headers);
     }
 
     public Response get_response(final Method method, final String end_point) throws NullPointerException {

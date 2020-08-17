@@ -8,6 +8,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.hamcrest.Matchers;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterMethod;
@@ -25,7 +26,7 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
 
     private NDTVWeatherPO weatherPO;
     private ApiBase apiBase;
-    private final Map<String, String> apiResponse = new HashMap<>();
+    private Response response;
 
     @BeforeMethod
     public void setupTest(ITestContext testContext) throws InterruptedException {
@@ -33,17 +34,16 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
         String cityName = testData.getProperty("cityName");
         initAPIBase(testContext, cityName);
 
-        captureWeatherInfoFromWeb(cityName);
+        //captureWeatherInfoFromWeb(cityName);
         captureWeatherInfoFromApi();
     }
 
     private void captureWeatherInfoFromApi() {
-        Response response = apiBase.get_response(Method.GET, EndPoints.WEATHER.toString());
+        response = apiBase.get_response(Method.GET, EndPoints.WEATHER.toString());
 
         response
                 .then()
                 .statusCode(200);
-        String condition = response.jsonPath().getString("weather.main");
     }
 
     private void captureWeatherInfoFromWeb(String cityName) throws InterruptedException {
@@ -74,5 +74,6 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
     @Test
     public void validateCityWeatherInfoIsDisplayed() {
         assertTrue(weatherPO.isWeatherInfoDisplayed());
+        response.then().body("weather.main", Matchers.instanceOf(String.class));
     }
 }

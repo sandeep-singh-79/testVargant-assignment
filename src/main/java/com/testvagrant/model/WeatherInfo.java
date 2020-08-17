@@ -6,8 +6,10 @@ public class WeatherInfo {
     private String cityName;
     private List<String> condition;
     private float windSpeed;
-    private float humidity;
-    private byte tempDegrees, tempFahrenheit;
+    private float windGust;
+    private float tempDegrees;
+    private float tempFahrenheit;
+    private String humidity;
 
     public WeatherInfo() {
     }

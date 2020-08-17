@@ -8,7 +8,6 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.logging.LogType;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 
@@ -57,7 +56,6 @@ public class ScreenshotListener extends TestListenerAdapter {
 
     private void take_screenshot(ITestResult iTestResult) {
         WebDriver driver = (WebDriver) iTestResult.getTestContext().getAttribute("driver");
-        capture_browser_logs(driver);
 
         try {
             take_screenshot(driver, iTestResult);
@@ -69,12 +67,5 @@ public class ScreenshotListener extends TestListenerAdapter {
                     FrameworkConfig.getInstance().getConfigProperties().getProperty("DRIVERTYPE")));
             take_screenshot(driver, iTestResult);
         }
-    }
-
-    private void capture_browser_logs(WebDriver driver) {
-        // capture failure logs before screenshotting
-        log.error("*******************Browser Log*******************");
-        driver.manage().logs().get(LogType.BROWSER).forEach((entry) -> log.error(entry.getMessage()));
-        log.error("*************************************************");
     }
 }
