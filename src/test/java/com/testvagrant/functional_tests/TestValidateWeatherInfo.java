@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.testvagrant.base.BaseTestNGTest;
 import com.testvagrant.base.api.ApiBase;
 import com.testvagrant.base.api.EndPoints;
+import com.testvagrant.exception.NoSuchCityException;
 import com.testvagrant.model.WeatherInfo;
 import com.testvagrant.pages.NDTVWeatherPO;
+import com.testvagrant.util.Utils;
 import groovy.json.JsonOutput;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
@@ -33,7 +35,7 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
     private final Gson gson = new Gson();
 
     @BeforeMethod
-    public void setupTest(ITestContext testContext) throws InterruptedException {
+    public void setupTest(ITestContext testContext) throws InterruptedException, NoSuchCityException {
         driver = (WebDriver) testContext.getAttribute(DRIVER.toString());
         String cityName = testData.getProperty("cityName");
         initAPIBase(testContext, cityName);
@@ -63,13 +65,21 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
         weatherInfoApi = gson.fromJson(JsonOutput.toJson(weatherResponseMap), WeatherInfo.class);
     }
 
-    private void captureWeatherInfoFromWeb(String cityName) throws InterruptedException {
+    private void captureWeatherInfoFromWeb(String cityName) throws InterruptedException, NoSuchCityException {
         weatherPO = homePO.navigateToWeatherPage();
         Map<String, Object> weatherWeb = new HashMap<>();
-        weatherWeb = weatherPO
-                             .searchForCity(testData.getProperty("searchTerm"), cityName)
-                             .displayCityWeatherInfo(cityName)
-                             .storeWeatherInfo(cityName);
+        try {
+            weatherWeb = weatherPO
+                                 .searchForCity(testData.getProperty("searchTerm"), cityName)
+                                 .displayCityWeatherInfo(cityName)
+                                 .storeWeatherInfo(cityName);
+        } catch (InterruptedException e) {
+            Utils.log_exception(e);
+        } catch (NoSuchCityException e) {
+            Utils.log_exception(e);
+        } catch (NullPointerException npe) {
+            Utils.log_exception(npe);
+        }
         weatherInfoWeb = gson.fromJson(JsonOutput.toJson(weatherWeb), WeatherInfo.class);
     }
 

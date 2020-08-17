@@ -2,7 +2,10 @@ package com.testvagrant.pages;
 
 import com.testvagrant.base.BasePageObject;
 import com.testvagrant.config.FrameworkConfig;
+import com.testvagrant.exception.NoSuchCityException;
+import com.testvagrant.util.Utils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -13,6 +16,7 @@ import java.util.*;
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 
@@ -26,14 +30,25 @@ public class NDTVWeatherPO extends BasePageObject {
     private List<WebElement> weatherConditions;
 
 
-    public NDTVWeatherPO searchForCity(final String searchValue, final String cityName) throws InterruptedException {
+    public NDTVWeatherPO searchForCity(final String searchValue, final String cityName) throws InterruptedException, NoSuchCityException {
         // wait for the page scripts to finish loading. Temporarily using thread.sleep till we figure out how to
         // wait for the script on page load complete before we continue forward
         Thread.sleep(5000);
-        citySearchtxtBox.sendKeys(searchValue);
-        wait.until(visibilityOfAllElements(citySuggestions = driver.findElements(By.xpath("//*[@id='messages']//div[not(contains(@style, 'none'))]"))));
-        if (isCitySelectable(cityName)) city.click();
-        return this;
+        if (isNotBlank(cityName) && isNotBlank(searchValue)) {
+            try {
+                citySearchtxtBox.sendKeys(searchValue);
+                wait.ignoring(NoSuchElementException.class, TimeoutException.class)
+                        .until(visibilityOfAllElements(citySuggestions = driver.findElements(By.xpath("//*[@id='messages']//div[not(contains(@style, 'none'))]"))));
+                if (citySuggestions.size() > 0 && isCitySelectable(cityName)) city.click();
+            } catch (TimeoutException e) {
+                Utils.log_exception(e);
+                /*if (e.getMessage().contains("Expected condition failed: waiting for visibility"))
+                    throw new NoSuchCityException(format("Unable to locate any city with the search term %s", searchValue));*/
+            }
+
+            return this;
+        }
+        return null;
     }
 
     public NDTVWeatherPO displayCityWeatherInfo(final String cityName) {
