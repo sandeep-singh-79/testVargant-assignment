@@ -10,6 +10,8 @@ import org.openqa.selenium.support.PageFactory;
 
 import java.util.*;
 
+import static java.lang.Float.parseFloat;
+import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
@@ -63,12 +65,12 @@ public class NDTVWeatherPO extends BasePageObject {
         if (interimWeatherConditions.containsKey("Humidity")) {
             String humidity = ((String) interimWeatherConditions.get("Humidity")).trim();
             mapToReturn.put("humidity",
-                    Integer.parseInt(humidity.substring(0, humidity.length() - 1)));
+                    parseInt(humidity.substring(0, humidity.length() - 1)));
         }
         if (interimWeatherConditions.containsKey("Temp in Degrees"))
-            mapToReturn.put("tempDegrees", Integer.parseInt(interimWeatherConditions.get("Temp in Degrees").toString().trim()));
+            mapToReturn.put("tempDegrees", parseFloat(interimWeatherConditions.get("Temp in Degrees").toString().trim()));
         if (interimWeatherConditions.containsKey("Temp in Fahrenheit"))
-            mapToReturn.put("tempFahrenheit", Integer.parseInt(interimWeatherConditions.get("Temp in Fahrenheit").toString().trim()));
+            mapToReturn.put("tempFahrenheit", parseFloat(interimWeatherConditions.get("Temp in Fahrenheit").toString().trim()));
         if (interimWeatherConditions.containsKey("cityName"))
             mapToReturn.put("cityName", interimWeatherConditions.get("cityName"));
 
@@ -93,7 +95,7 @@ public class NDTVWeatherPO extends BasePageObject {
                 break;
             }
 
-        return city != null;
+        return city != null && !city.isSelected();
     }
 
     public NDTVWeatherPO(WebDriver driver) {
