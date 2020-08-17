@@ -9,8 +9,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
@@ -55,21 +53,19 @@ public class NDTVWeatherPO extends BasePageObject {
         if (interimWeatherConditions.containsKey("Condition"))
             mapToReturn.put("condition", interimWeatherConditions.get("Condition"));
         if (interimWeatherConditions.containsKey("Wind")) {
-            String toMatchString = (String) interimWeatherConditions.get("Wind");
-            Pattern pattern = Pattern.compile("(\\d+\\.\\d{1,2})");
-            Matcher matcher = pattern.matcher(toMatchString);
-            mapToReturn.put("windSpeed", matcher.group(0));
-            mapToReturn.put("windGust", matcher.group(1));
+            String[] windStringSplits = ((String) interimWeatherConditions.get("Wind")).trim().split(" ");
+            mapToReturn.put("windSpeed", windStringSplits[0]);
+            mapToReturn.put("windGust", windStringSplits[4]);
         }
         if (interimWeatherConditions.containsKey("Humidity")) {
-            String humidity = (String) interimWeatherConditions.get("Humidity");
+            String humidity = ((String) interimWeatherConditions.get("Humidity")).trim();
             mapToReturn.put("humidity",
                     Integer.parseInt(humidity.substring(0, humidity.length() - 1)));
         }
         if (interimWeatherConditions.containsKey("Temp in Degrees"))
-            mapToReturn.put("tempDegrees", interimWeatherConditions.get("Temp in Degrees"));
+            mapToReturn.put("tempDegrees", Integer.parseInt(interimWeatherConditions.get("Temp in Degrees").toString().trim()));
         if (interimWeatherConditions.containsKey("Temp in Fahrenheit"))
-            mapToReturn.put("tempFahrenheit", interimWeatherConditions.get("Temp in Fahrenheit"));
+            mapToReturn.put("tempFahrenheit", Integer.parseInt(interimWeatherConditions.get("Temp in Fahrenheit").toString().trim()));
         if (interimWeatherConditions.containsKey("cityName"))
             mapToReturn.put("cityName", interimWeatherConditions.get("cityName"));
 
