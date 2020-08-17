@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.testvagrant.base.context.Context.DRIVER;
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 @Slf4j
 public class TestValidateWeatherInfo extends BaseTestNGTest {
@@ -38,8 +38,8 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
         String cityName = testData.getProperty("cityName");
         initAPIBase(testContext, cityName);
 
-        captureWeatherInfoFromApi(cityName);
         captureWeatherInfoFromWeb(cityName);
+        captureWeatherInfoFromApi(cityName);
     }
 
     private void captureWeatherInfoFromApi(String cityName) {
@@ -48,14 +48,16 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
         response
                 .then()
                 .statusCode(200);
-        int tempDegrees = response.jsonPath().get("main.temp");
+
+        // need to do this as an int is being returned and autoboxing or casting is not working
+        float tempDegrees = Float.parseFloat(response.jsonPath().get("main.temp") + "");
         Map<String, Object> weatherResponseMap = new HashMap<>();
         weatherResponseMap.put("condition", response.jsonPath().getList("weather.main"));
         weatherResponseMap.put("cityName", cityName);
         weatherResponseMap.put("windSpeed", response.jsonPath().get("wind.speed"));
         weatherResponseMap.put("windGust", response.jsonPath().get("wind.gust"));
         weatherResponseMap.put("tempDegrees", tempDegrees);
-        weatherResponseMap.put("tempFahrenheit", (int) (tempDegrees * 1.8 + 32));
+        weatherResponseMap.put("tempFahrenheit", tempDegrees * 1.8 + 32);
         weatherResponseMap.put("humidity", response.jsonPath().get("main.humidity"));
 
         weatherInfoApi = gson.fromJson(JsonOutput.toJson(weatherResponseMap), WeatherInfo.class);
@@ -90,6 +92,8 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
 
     @Test
     public void validateCityWeatherInfoIsDisplayed() {
-        assertEquals(weatherInfoApi, weatherInfoWeb);
+        log.info("Weather data from API: {}", weatherInfoApi.toString());
+        log.info("Weather data from Web: {}", weatherInfoWeb.toString());
+        assertTrue(weatherInfoApi.equals(weatherInfoWeb));
     }
 }

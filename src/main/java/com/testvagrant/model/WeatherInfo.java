@@ -45,4 +45,17 @@ public class WeatherInfo {
                        .append(humidity)
                        .toHashCode();
     }
+
+    @Override
+    public String toString() {
+        return "WeatherInfo{" +
+                       "cityName='" + cityName + '\'' +
+                       ", condition=" + condition +
+                       ", windSpeed=" + windSpeed +
+                       ", windGust=" + windGust +
+                       ", tempDegrees=" + tempDegrees +
+                       ", tempFahrenheit=" + tempFahrenheit +
+                       ", humidity=" + humidity +
+                       '}';
+    }
 }
