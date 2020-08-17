@@ -9,7 +9,7 @@ import java.util.List;
 
 @EqualsAndHashCode
 @ToString
-@Getter(lazy = true)
+@Getter
 @NoArgsConstructor
 public class WeatherInfo {
     private String cityName;

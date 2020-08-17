@@ -6,6 +6,9 @@ import com.testvagrant.base.api.ApiBase;
 import com.testvagrant.base.api.EndPoints;
 import com.testvagrant.exception.NoSuchCityException;
 import com.testvagrant.model.WeatherInfo;
+import com.testvagrant.model.comparator.HumidityComparator;
+import com.testvagrant.model.comparator.TemperatureComparator;
+import com.testvagrant.model.comparator.WindSpeedComparator;
 import com.testvagrant.pages.NDTVWeatherPO;
 import com.testvagrant.util.Utils;
 import groovy.json.JsonOutput;
@@ -24,6 +27,7 @@ import java.util.Map;
 
 import static com.testvagrant.base.context.Context.DRIVER;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 @Slf4j
 public class TestValidateWeatherInfo extends BaseTestNGTest {
@@ -104,6 +108,14 @@ public class TestValidateWeatherInfo extends BaseTestNGTest {
     public void validateCityWeatherInfoIsDisplayed() {
         log.info("Weather data from API: {}", weatherInfoApi.toString());
         log.info("Weather data from Web: {}", weatherInfoWeb.toString());
-        assertTrue(weatherInfoApi.equals(weatherInfoWeb));
+        boolean compareTemp = new TemperatureComparator().compare(weatherInfoApi, weatherInfoWeb) == 0;
+        log.info("Is the temparature within the variance {}? {}", testData.getProperty("tempVariance"), compareTemp);
+        boolean compareHumidity = new HumidityComparator().compare(weatherInfoApi, weatherInfoWeb) == 0;
+        log.info("Is the humidity within the variance {}? {}", testData.getProperty("humidityVariance"), compareHumidity);
+        boolean compareWindSpeed = new WindSpeedComparator().compare(weatherInfoWeb, weatherInfoApi) == 0;
+        log.info("Is the wind speed within the variance {}? {}", testData.getProperty("windVariance"), compareWindSpeed);
+
+        if (compareTemp && compareHumidity && compareWindSpeed) assertTrue(true);
+        else fail("One of the comparators returned a value outside acceptable variance");
     }
 }
