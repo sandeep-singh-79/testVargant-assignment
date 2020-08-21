@@ -15,12 +15,12 @@ public class TemperatureComparator implements Comparator<WeatherInfo> {
 
     @Override
     public int compare(WeatherInfo o1, WeatherInfo o2) {
-        float humidity1 = o1.getHumidity();
-        float humidity2 = o2.getHumidity();
-        float humidityVariance = Float.parseFloat(test_data.getProperty("tempVariance"));
+        float temp1 = o1.getTempDegrees();
+        float temp2 = o2.getTempDegrees();
+        float tempVariance = Float.parseFloat(test_data.getProperty("tempVariance"));
 
-        float absHumidity = Math.abs(humidity1 - humidity2);
+        float absTemp = Math.abs(temp1 - temp2);
 
-        return (absHumidity >= 0 && absHumidity <= humidityVariance) ? 0 : 1;
+        return (absTemp >= 0 && absTemp <= tempVariance) ? 0 : 1;
     }
 }
